@@ -1,40 +1,55 @@
-import React, {Component} from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
     Animated,
     StyleSheet,
     View,
+    TouchableWithoutFeedback
 } from 'react-native';
 
 export default class Player extends Component {
     render() {
-        const { player } = this.props;
+        var { position, previousPosition, selected, onClickPlayer } = this.props;
 
-        var valueXY = new Animated.ValueXY(player.previousPosition);
+        var valueXY;
 
-        Animated.spring(valueXY, {
-            ...Player.SPRING_CONFIG,
-            toValue: player.position
-        }).start();
+        if(selected) {
+            previousPosition = previousPosition === undefined ?
+                position : previousPosition;
 
-        var style = [
-            styles.box,
+            valueXY = new Animated.ValueXY(previousPosition);
+
+            Animated.spring(valueXY, {
+                ...Player.SPRING_CONFIG,
+                toValue: position
+            }).start();
+        } else {
+            valueXY = new Animated.ValueXY(position);
+        }
+
+        const style = [
+            {
+                backgroundColor: selected === true ? 'yellow' : 'red',
+                height: 15,
+                width: 15,
+                position: 'absolute',
+                borderRadius: 15
+            },
             {
                 transform: valueXY.getTranslateTransform()
             }
         ];
 
         return (
-            <Animated.View style={style} />
+            <TouchableWithoutFeedback onPress={onClickPlayer}>
+                <Animated.View style={style} />
+            </TouchableWithoutFeedback>
         );
     }
 }
 
-const styles = StyleSheet.create({
-    box: {
-        backgroundColor: 'red',
-        height: 15,
-        width: 15,
-        position: 'absolute',
-        borderRadius: 15
-    }
-});
+Player.propTypes = {
+    position: PropTypes.object.isRequired,
+    previousPosition: PropTypes.object.isRequired,
+    selected: PropTypes.bool.isRequired,
+    onClickPlayer: PropTypes.func.isRequired
+};

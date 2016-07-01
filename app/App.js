@@ -6,10 +6,10 @@ import { createStore, applyMiddleware, combineReducers, compose } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import createLogger from 'redux-logger'
 
-import playerReducer from './player/playerReducer';
+import playersReducer from './player/playersReducer';
 
 var reducers = {
-    player: playerReducer
+    players: playersReducer
 };
 
 var rootReducer = combineReducers(reducers);
